@@ -7,50 +7,10 @@ import {
   FaustMonoDspGenerator,
   FaustCompiler,
 } from "@grame/faustwasm";
-import { Slider, SliderSet } from "./Slider";
-import { CiPower } from "react-icons/ci";
 
-// NodeSliders component
-const NodeSliders = ({
-  nodeId,
-  onFrequencyChange,
-  onAmplitudeChange,
-}: {
-  nodeId: number;
-  onFrequencyChange: (values: number[], nodeId: number) => void;
-  onAmplitudeChange: (value: number) => void;
-}) => {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      <h3>Node {nodeId}</h3>
-      {/* <Slider
-        label="Frequency"
-        id={`freqSlider-${nodeId}`}
-        min="20"
-        max="2000"
-        step="1"
-        defaultValue="440"
-        onChange={onFrequencyChange}
-      /> */}
-      <Slider
-        label="Amplitude"
-        id={`ampSlider-${nodeId}`}
-        min="0"
-        max="1"
-        step="0.01"
-        defaultValue="0.5"
-        onChange={onAmplitudeChange}
-      />
-      <SliderSet
-        nodeId={nodeId}
-        onFrequencyChange={(...args) => {
-          console.log(args);
-          onFrequencyChange(...args);
-        }}
-      />
-    </div>
-  );
-};
+import { CiPower } from "react-icons/ci";
+import NodeSliders from "./NodeSliders";
+import { FM1, SimpleSawtooth } from "./faust-synths";
 
 // Main app
 const App = () => {
@@ -131,20 +91,7 @@ const App = () => {
     //   process = os.osc(freq) * amp;
     // `;
 
-    const code = `
-    import("stdfaust.lib");
-
-    freq = hslider("Frequency", 440, 20, 2000, 1);
-    amp = hslider("Amplitude", 0.5, 0, 1, 0.01);
-
-    sawOsc = os.sawtooth(freq);         // Fundamental sawtooth wave
-    subOsc = os.sawtooth(freq / 2);     // Sub-octave for warmth
-    harmonicOsc = os.sawtooth(freq * 2); // Second harmonic for richness
-
-    richSaw = sawOsc + 0.5 * subOsc + 0.25 * harmonicOsc;
-
-    process = richSaw * amp;
-    `;
+    const code = FM1;
     const argv = ["-I", "libraries/"];
     const name = "oscillator";
 
@@ -169,6 +116,14 @@ const App = () => {
         node.setParamValue("/oscillator/Amplitude", value);
       };
 
+      const handleModFreqChange = (value: number) => {
+        node.setParamValue("/oscillator/ModFreq", value);
+      };
+
+      const handleModDepthChange = (value: number) => {
+        node.setParamValue("/oscillator/ModDepth", value);
+      };
+
       // const targetDiv = document.getElementById(`sliders-${nodeId}`);
       const targetDiv = document.getElementById(`sliders-container`);
 
@@ -190,6 +145,8 @@ const App = () => {
               // console.log("###", nodeFreqList.current);
             }}
             onAmplitudeChange={handleAmplitudeChange}
+            onModFreqChange={handleModFreqChange}
+            onModDepthChange={handleModDepthChange}
           />
           // </div>
         );

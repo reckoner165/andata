@@ -2,52 +2,6 @@ import { FormEventHandler, useCallback, useEffect, useRef } from "react";
 // import styled from "styled-components";
 import * as RSlider from "@radix-ui/react-slider";
 
-// Slider component
-// export const Slider = ({
-//   label,
-//   id,
-//   min,
-//   max,
-//   step,
-//   defaultValue,
-//   onChange,
-//   className,
-// }: {
-//   label: string;
-//   id: string;
-//   min: string;
-//   max: string;
-//   step: string;
-//   defaultValue: string;
-//   onChange?: (value: number) => void;
-//   className?: string;
-// }) => {
-//   return (
-//     <div className={className}>
-//       <label htmlFor={id}>{label}</label>
-//       <input
-//         id={id}
-//         type="range"
-//         min={min}
-//         max={max}
-//         step={step}
-//         defaultValue={defaultValue}
-//         onInput={(e) =>
-//           onChange?.(parseFloat((e.target as HTMLInputElement).value))
-//         }
-//       />
-//     </div>
-//   );
-// };
-
-// export const VerticalSlider = styled(Slider)`
-//   width: 50px;
-//   input[type="range"] {
-//     -webkit-appearance: slider-vertical;
-//     appearance: slider-vertical;
-//   }
-// `;
-
 export const Slider = ({
   label,
   id,
@@ -59,8 +13,8 @@ export const Slider = ({
   className,
   orientation,
 }: {
-  label: string;
-  id: string;
+  label?: string;
+  id?: string;
   min: string;
   max: string;
   step: string;
