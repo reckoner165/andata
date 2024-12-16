@@ -14,7 +14,17 @@ const NodeSliders = ({
   onModDepthChange: (value: number) => void;
 }) => {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+        border: "solid 0.5px #1a1a1a",
+        borderRadius: "4px",
+        margin: "8px 0 8px 0",
+        padding: "4px 16px 8px 16px",
+      }}
+    >
       <h3>Node {nodeId}</h3>
       {/* <Slider
         label="Frequency"
