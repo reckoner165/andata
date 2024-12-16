@@ -5,12 +5,16 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #929292;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
 }
 
 a {
@@ -45,6 +49,7 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  height: 50px;
 }
 button:hover {
   border-color: #646cff;
@@ -65,4 +70,54 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+
+/* styles.css */
+.SliderRoot {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+.SliderRoot[data-orientation="vertical"] {
+	flex-direction: column;
+	width: 20px;
+	height: 100px;
+}
+.SliderRoot[data-orientation="horizontal"] {
+	flex-direction: row;
+	width: 200px;
+	height: 20px;
+}
+
+.SliderTrack {
+	position: relative;
+	flex-grow: 1;
+	background-color: rgb(194, 194, 194);
+}
+.SliderTrack[data-orientation="vertical"] {
+	width: 3px;
+}
+.SliderTrack[data-orientation="horizontal"] {
+	height: 3px;
+}
+
+.SliderRange {
+	position: absolute;
+	/* background-color: black; */
+  background-color: #ff5924;
+}
+.SliderRange[data-orientation="vertical"] {
+	width: 100%;
+}
+.SliderRange[data-orientation="horizontal"] {
+	height: 100%;
+}
+
+.SliderThumb {
+	display: block;
+	width: 20px;
+	height: 20px;
+  border-radius: 50%;
+	background-color:  rgb(235, 234, 234);
 }

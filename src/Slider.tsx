@@ -1,7 +1,53 @@
-import { useCallback, useEffect, useRef } from "react";
-import styled from "styled-components";
+import { FormEventHandler, useCallback, useEffect, useRef } from "react";
+// import styled from "styled-components";
+import * as RSlider from "@radix-ui/react-slider";
 
 // Slider component
+// export const Slider = ({
+//   label,
+//   id,
+//   min,
+//   max,
+//   step,
+//   defaultValue,
+//   onChange,
+//   className,
+// }: {
+//   label: string;
+//   id: string;
+//   min: string;
+//   max: string;
+//   step: string;
+//   defaultValue: string;
+//   onChange?: (value: number) => void;
+//   className?: string;
+// }) => {
+//   return (
+//     <div className={className}>
+//       <label htmlFor={id}>{label}</label>
+//       <input
+//         id={id}
+//         type="range"
+//         min={min}
+//         max={max}
+//         step={step}
+//         defaultValue={defaultValue}
+//         onInput={(e) =>
+//           onChange?.(parseFloat((e.target as HTMLInputElement).value))
+//         }
+//       />
+//     </div>
+//   );
+// };
+
+// export const VerticalSlider = styled(Slider)`
+//   width: 50px;
+//   input[type="range"] {
+//     -webkit-appearance: slider-vertical;
+//     appearance: slider-vertical;
+//   }
+// `;
+
 export const Slider = ({
   label,
   id,
@@ -11,6 +57,7 @@ export const Slider = ({
   defaultValue,
   onChange,
   className,
+  orientation,
 }: {
   label: string;
   id: string;
@@ -20,32 +67,38 @@ export const Slider = ({
   defaultValue: string;
   onChange?: (value: number) => void;
   className?: string;
-}) => {
-  return (
-    <div className={className}>
-      <label htmlFor={id}>{label}</label>
-      <input
-        id={id}
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        defaultValue={defaultValue}
-        onInput={(e) =>
-          onChange?.(parseFloat((e.target as HTMLInputElement).value))
-        }
-      />
-    </div>
-  );
-};
+  orientation?: "horizontal" | "vertical" | undefined;
+}) => (
+  <RSlider.Root
+    className="SliderRoot"
+    defaultValue={[Number(defaultValue)]}
+    min={Number(min)}
+    max={Number(max)}
+    orientation={orientation ?? "horizontal"}
+    step={Number(step)}
+    onValueChange={(val) => {
+      console.log("###", val);
+      onChange?.(val[0]);
+    }}
+  >
+    <RSlider.Track className="SliderTrack">
+      <RSlider.Range className="SliderRange" />
+    </RSlider.Track>
+    <RSlider.Thumb className="SliderThumb" />
+  </RSlider.Root>
+);
 
-export const VerticalSlider = styled(Slider)`
-  width: 50px;
-  input[type="range"] {
-    -webkit-appearance: slider-vertical;
-    appearance: slider-vertical;
-  }
-`;
+export const VerticalSlider = (args: {
+  label: string;
+  id: string;
+  min: string;
+  max: string;
+  step: string;
+  defaultValue: string;
+  onChange?: (value: number) => void;
+  className?: string;
+  orientation?: string;
+}) => <Slider {...args} orientation={"vertical"} />;
 
 export const SliderSet = ({
   nodeId,
@@ -68,7 +121,7 @@ export const SliderSet = ({
   }, []);
 
   return (
-    <div style={{ display: "flex", flexDirection: "row" }}>
+    <div style={{ display: "flex", flexDirection: "row", gap: "5%" }}>
       {Array.from({ length: 8 }, (_, i) => i).map((_, i) => (
         <VerticalSlider
           key={i}

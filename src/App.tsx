@@ -8,6 +8,7 @@ import {
   FaustCompiler,
 } from "@grame/faustwasm";
 import { Slider, SliderSet } from "./Slider";
+import { CiPower } from "react-icons/ci";
 
 // NodeSliders component
 const NodeSliders = ({
@@ -20,7 +21,7 @@ const NodeSliders = ({
   onAmplitudeChange: (value: number) => void;
 }) => {
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       <h3>Node {nodeId}</h3>
       {/* <Slider
         label="Frequency"
@@ -84,7 +85,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    console.log("### STEP", step, nodeFreqList.current);
+    // console.log("### STEP", step, nodeFreqList.current);
     freqHandlersForNode.current.forEach((handler, i) => {
       const currentFreq = nodeFreqList.current[i][step];
       handler(currentFreq);
@@ -106,7 +107,16 @@ const App = () => {
   }, []);
 
   const startAudio = () => {
-    audioContext.resume();
+    // audioContext.resume();
+    if (audioContext.state === "suspended") {
+      // Resume playback
+      audioContext.resume();
+      console.log("Audio resumed");
+    } else if (audioContext.state === "running") {
+      // Stop playback
+      audioContext.suspend();
+      console.log("Audio suspended");
+    }
   };
 
   const addNode = useCallback(async () => {
@@ -177,7 +187,7 @@ const App = () => {
             onFrequencyChange={(values, nodeId) => {
               console.log(values);
               nodeFreqList.current[nodeId] = values;
-              console.log("###", nodeFreqList.current);
+              // console.log("###", nodeFreqList.current);
             }}
             onAmplitudeChange={handleAmplitudeChange}
           />
@@ -188,9 +198,20 @@ const App = () => {
   }, [audioContext, faustState, nodes.length]);
 
   return (
-    <div>
-      <button onClick={startAudio}>Start Audio</button>
-      <button onClick={addNode}>Add Node</button>
+    <div style={{ width: "60%", margin: "0 auto" }}>
+      <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+        <button
+          onClick={startAudio}
+          style={{
+            backgroundColor:
+              audioContext.state === "running" ? "#ff5924" : "#1a1a1a",
+          }}
+        >
+          {/* Start Audio */}
+          <CiPower />
+        </button>
+        <button onClick={addNode}>Add Node</button>
+      </div>
       <div id="sliders-container">
         {/* {nodes.map((nodeId) => (
           <div key={nodeId} id={`sliders-${nodeId}`} />
