@@ -34,3 +34,38 @@ export const FM1 = `
     // Output signal with amplitude control
     process = fmSignal * amp;
 `;
+
+
+// export const MoogFilter = `import("stdfaust.lib");
+// cutoff = hslider("Cutoff", 200, 20, 20000, 0.1) : si.smoo;
+// q = hslider("Q (Resonance)", 4, 0.1, 10, 0.01) : si.smoo; // Default Q is 0.707 (Butterworth)
+
+// // Process: Apply a biquad low-pass filter
+// process = fi.resonlp(cutoff, q, 1);`;
+
+
+export const MoogFilter = `
+import("stdfaust.lib");
+
+// Simple one-pole low-pass filter (corrected)
+lowpass(cutoff) = si.smooth(ba.tau2pole(1.0/(2.0*ma.PI*cutoff)));
+
+// Saturation function
+saturation(x) = ma.tanh(x);
+
+// Ladder filter implementation
+ladderFilter(cutoff, res) = stage4
+with {
+    stage1 = _ : lowpass(cutoff) : saturation;
+    stage2 = _ : lowpass(cutoff) : saturation;
+    stage3 = _ : lowpass(cutoff) : saturation;
+    stage4 = _ : lowpass(cutoff) : saturation;
+};
+
+// Main process
+process = _ <: ladderFilter(
+    hslider("Cutoff", 1000, 20, 20000, 1),
+    hslider("Resonance", 0.5, 0, 1, 0.01)
+);
+
+`

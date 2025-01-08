@@ -10,7 +10,7 @@ import {
 
 import { CiPower } from "react-icons/ci";
 import NodeSliders from "./NodeSliders";
-import { FM1, SimpleSawtooth } from "./faust-synths";
+import { FM1, MoogFilter, SimpleSawtooth } from "./faust-synths";
 
 // Main app
 const App = () => {
@@ -94,21 +94,33 @@ const App = () => {
     const code = FM1;
     const argv = ["-I", "libraries/"];
     const name = "oscillator";
+    const moogName = "moogFilter";
 
     await generator.compile(compiler, name, code, argv.join(" "));
     const node = await generator.createNode(audioContext);
 
-    if (node) {
+    await generator.compile(compiler, moogName, MoogFilter, argv.join(" "));
+    const moogFilterNode = await generator.createNode(audioContext);
+
+    if (node && moogFilterNode) {
       const nodeId = nodes.length + 1; // Unique ID for the node
       setNodes((prev) => [...prev, nodeId]);
 
-      node.connect(audioContext.destination);
-      node.start();
+      node.connect(moogFilterNode);
+      moogFilterNode.connect(audioContext.destination);
+      // node.start();
+
+      console.log(node.numberOfOutputs); // Should be 1 or more
+      console.log(moogFilterNode.numberOfInputs); // Should match the previous node's output
+      console.log(moogFilterNode.numberOfOutputs);
 
       // Bind the parameter update handlers
       const handleFrequencyChange = (value: number) => {
         node.setParamValue("/oscillator/Frequency", value);
       };
+
+      // moogFilterNode.setParamValue("/moogFilter/cutoff", 500); // Set cutoff to 1000 Hz
+      // moogFilterNode.setParamValue("/moogFilter/Resonance", 0.7);
 
       freqHandlersForNode.current[nodeId] = handleFrequencyChange;
 
@@ -118,6 +130,7 @@ const App = () => {
 
       const handleModFreqChange = (value: number) => {
         node.setParamValue("/oscillator/ModFreq", value);
+        moogFilterNode.setParamValue("/moogFilter/Cutoff", value);
       };
 
       const handleModDepthChange = (value: number) => {
